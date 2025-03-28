@@ -1,0 +1,46 @@
+name: 'Demo-CICD'
+
+on:
+  pull_request_target:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: 'Terraform Deployment'
+    if: ${{ github.event_name == 'push' || startsWith(github.ref, 'refs/heads/') }}
+    runs-on: ubuntu-latest
+    environment: dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=${{ vars.TF_BACKEND_BUCKET }}" -backend-config="prefix=${{ vars.TF_BACKEND_PREFIX }}"
+      
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Plan
+        run: terraform plan --out=tfplan.binary -var-file=terraform.tfvars
+
+      - name: Terraform Apply
+        if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
+        run: terraform apply tfplan.binary
