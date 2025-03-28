@@ -42,5 +42,5 @@ jobs:
         run: terraform plan --out=tfplan.binary -var-file=terraform.tfvars
 
       - name: Terraform Apply
-        if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
+      #  if: ${{ github.ref == 'refs/heads/master' && github.event_name == 'push' }}
         run: terraform apply tfplan.binary
