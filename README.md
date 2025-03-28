@@ -1,4 +1,5 @@
 # gdg-elte-demo
-Short workshop for GDG ELTE covering topics such as Google Cloud essentials for developers (Cloud Functions, Compute Engine, Cloud Storage, etc.), Infrastructure as Code (IaC) and automation with Terraform. 
+This repository demonstrates how to take code from development to production in Google Cloud—without manual intervention. 
+It covers the fundamentals of CI/CD, showcasing an enterprise level approach using Infrastructure as Code with Terraform and GitHub Actions.
+Try out the demo on your own!
 
-Workshop includes a hands-on demo of deploying a simple web app on Google Cloud Platform.
